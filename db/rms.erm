@@ -135,7 +135,7 @@
 			</connections>
 			<display>false</display>
 			<creation_date>2020-05-30 09:43:01</creation_date>
-			<updated_date>2020-06-01 10:40:29</updated_date>
+			<updated_date>2020-06-01 23:43:56</updated_date>
 			<model_property>
 				<name>Project Name</name>
 				<value></value>
@@ -515,11 +515,11 @@
 		<table>
 			<id>0</id>
 			<height>298</height>
-			<width>226</width>
+			<width>227</width>
 				<font_name>Microsoft YaHei UI</font_name>
 				<font_size>9</font_size>
-			<x>312</x>
-			<y>480</y>
+			<x>84</x>
+			<y>408</y>
 			<color>
 				<r>128</r>
 				<g>128</g>
@@ -528,6 +528,28 @@
 			<connections>
 				<relation>
 					<id>0</id>
+					<source>2</source>
+					<target>0</target>
+						<source_xp>-1</source_xp>
+						<source_yp>-1</source_yp>
+						<target_xp>-1</target_xp>
+						<target_yp>-1</target_yp>
+						<color>
+							<r>0</r>
+							<g>0</g>
+							<b>0</b>
+						</color>
+					<child_cardinality>1..n</child_cardinality>
+					<parent_cardinality>1</parent_cardinality>
+					<reference_for_pk>true</reference_for_pk>
+					<name></name>
+					<on_delete_action>RESTRICT</on_delete_action>
+					<on_update_action>RESTRICT</on_update_action>
+					<referenced_column>null</referenced_column>
+					<referenced_complex_unique_key>null</referenced_complex_unique_key>
+				</relation>
+				<relation>
+					<id>1</id>
 					<source>0</source>
 					<target>0</target>
 						<source_xp>100</source_xp>
@@ -546,28 +568,6 @@
 						</color>
 					<child_cardinality>1..n</child_cardinality>
 					<parent_cardinality>0..1</parent_cardinality>
-					<reference_for_pk>true</reference_for_pk>
-					<name></name>
-					<on_delete_action>RESTRICT</on_delete_action>
-					<on_update_action>RESTRICT</on_update_action>
-					<referenced_column>null</referenced_column>
-					<referenced_complex_unique_key>null</referenced_complex_unique_key>
-				</relation>
-				<relation>
-					<id>1</id>
-					<source>2</source>
-					<target>0</target>
-						<source_xp>-1</source_xp>
-						<source_yp>-1</source_yp>
-						<target_xp>-1</target_xp>
-						<target_yp>-1</target_yp>
-						<color>
-							<r>0</r>
-							<g>0</g>
-							<b>0</b>
-						</color>
-					<child_cardinality>1..n</child_cardinality>
-					<parent_cardinality>1</parent_cardinality>
 					<reference_for_pk>true</reference_for_pk>
 					<name></name>
 					<on_delete_action>RESTRICT</on_delete_action>
@@ -883,7 +883,7 @@
 				<normal_column>
 					<id>9</id>
 					<referenced_column>19</referenced_column>
-					<relation>1</relation>
+					<relation>0</relation>
 					<description></description>
 					<unique_key_name></unique_key_name>
 					<logical_name>发送者</logical_name>
@@ -917,7 +917,7 @@
 				<normal_column>
 					<id>10</id>
 					<referenced_column>0</referenced_column>
-					<relation>0</relation>
+					<relation>1</relation>
 					<description></description>
 					<unique_key_name></unique_key_name>
 					<logical_name>关联消息ID</logical_name>
@@ -967,8 +967,8 @@
 			<width>248</width>
 				<font_name>Microsoft YaHei UI</font_name>
 				<font_size>9</font_size>
-			<x>793</x>
-			<y>515</y>
+			<x>565</x>
+			<y>443</y>
 			<color>
 				<r>128</r>
 				<g>128</g>
@@ -1007,8 +1007,8 @@
 						<target_yp>-1</target_yp>
 						<bendpoint>
 							<relative>false</relative>
-							<x>917</x>
-							<y>223</y>
+							<x>689</x>
+							<y>151</y>
 						</bendpoint>
 						<color>
 							<r>0</r>
@@ -1313,12 +1313,12 @@
 		</table>
 		<table>
 			<id>2</id>
-			<height>137</height>
+			<height>183</height>
 			<width>227</width>
 				<font_name>Microsoft YaHei UI</font_name>
 				<font_size>9</font_size>
-			<x>312</x>
-			<y>132</y>
+			<x>84</x>
+			<y>60</y>
 			<color>
 				<r>128</r>
 				<g>128</g>

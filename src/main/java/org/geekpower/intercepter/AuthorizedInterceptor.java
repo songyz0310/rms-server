@@ -12,8 +12,6 @@ import org.geekpower.common.RpcResponse;
 import org.geekpower.common.Tuple;
 import org.geekpower.service.IAuthorityService;
 import org.geekpower.utils.GsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -27,8 +25,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
  */
 @Component
 public class AuthorizedInterceptor implements HandlerInterceptor {
-
-    private static Logger logger = LoggerFactory.getLogger(AuthorizedInterceptor.class);
 
     @Autowired
     private IAuthorityService authorityService;
