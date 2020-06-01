@@ -1,5 +1,7 @@
 package org.geekpower.form;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 搜索参数
  * 
@@ -12,7 +14,12 @@ public class SearchParam {
     private String sort;// 排序字段（+，正序，-，倒叙）
 
     public String getSearch() {
-        return search;
+        if (StringUtils.isEmpty(search)) {
+            return null;
+        }
+        else {
+            return "%" + search + "%";
+        }
     }
 
     public void setSearch(String search) {

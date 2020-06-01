@@ -70,8 +70,10 @@ CREATE TABLE tb_user
 (
 	user_id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '人员ID',
 	account varchar(32) NOT NULL COMMENT '账号',
-	user_name varchar(84) NOT NULL COMMENT '人员名称',
 	password varchar(64) NOT NULL COMMENT '密码',
+	user_name varchar(84) NOT NULL COMMENT '人员名称',
+	avatar varchar(128) COMMENT '头像',
+	email varchar(32) NOT NULL COMMENT '邮箱',
 	PRIMARY KEY (user_id)
 ) COMMENT = '人员表';
 

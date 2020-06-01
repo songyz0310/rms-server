@@ -9,7 +9,7 @@ package org.geekpower.form;
 public class PageParam extends SearchParam {
 
     private int pageNo = 1;
-    private int pageSize = 20;
+    private int pageSize = 10;
     private boolean needTotal = false;
 
     public int getPageNo() {

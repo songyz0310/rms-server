@@ -1,15 +1,16 @@
 package org.geekpower.common.enums;
 
 public enum IsOrNo {
-    NO((short) 0), IS((short) 1);
 
-    private short code;
+    NO((byte) 0), IS((byte) 1);
 
-    private IsOrNo(short code) {
+    private byte code;
+
+    private IsOrNo(byte code) {
         this.code = code;
     }
 
-    public short getCode() {
+    public byte getCode() {
         return code;
     }
 

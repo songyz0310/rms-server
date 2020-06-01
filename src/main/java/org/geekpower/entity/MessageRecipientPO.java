@@ -31,21 +31,19 @@ public class MessageRecipientPO {
     private int recipient;
 
     @Column(name = "is_delete", columnDefinition = "tinyint unsigned DEFAULT 0 NOT NULL COMMENT '是否已删除 : 0，未删除，1，已删除（回收站），2，已彻底删除'")
-    private short isDelete;
+    private byte isDelete;
 
     @Column(name = "is_rubbish", columnDefinition = "tinyint unsigned DEFAULT 0 NOT NULL COMMENT '是否是垃圾 : 0，正常邮件，1，垃圾邮件'")
-    private short isRubbish;
+    private byte isRubbish;
 
     @Column(name = "is_read", columnDefinition = "tinyint unsigned DEFAULT 0 NOT NULL COMMENT '是否已读 : 0，未读，1，已读'")
-    private short isRead;
+    private byte isRead;
 
     @Column(name = "read_time", columnDefinition = "datetime COMMENT '读取时间'")
     private Date readTime;
 
     @Column(name = "update_time", columnDefinition = "datetime NOT NULL COMMENT '更新时间'")
     private Date updateTime;
-    
-    
 
     public int getMrId() {
         return mrId;
@@ -71,27 +69,27 @@ public class MessageRecipientPO {
         this.recipient = recipient;
     }
 
-    public short getIsDelete() {
+    public byte getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(short isDelete) {
+    public void setIsDelete(byte isDelete) {
         this.isDelete = isDelete;
     }
 
-    public short getIsRubbish() {
+    public byte getIsRubbish() {
         return isRubbish;
     }
 
-    public void setIsRubbish(short isRubbish) {
+    public void setIsRubbish(byte isRubbish) {
         this.isRubbish = isRubbish;
     }
 
-    public short getIsRead() {
+    public byte getIsRead() {
         return isRead;
     }
 
-    public void setIsRead(short isRead) {
+    public void setIsRead(byte isRead) {
         this.isRead = isRead;
     }
 

@@ -25,11 +25,17 @@ public class UserPO {
     @Column(name = "account", columnDefinition = "varchar(32) NOT NULL COMMENT '账号'")
     private String account;
 
+    @Column(name = "password", columnDefinition = "varchar(64) NOT NULL COMMENT '密码'")
+    private String password;
+
     @Column(name = "user_name", columnDefinition = "varchar(64) NOT NULL COMMENT '用户名'")
     private String userName;
 
-    @Column(name = "password", columnDefinition = "varchar(64) NOT NULL COMMENT '密码'")
-    private String password;
+    @Column(name = "email", columnDefinition = "varchar(32) NOT NULL COMMENT '邮箱'")
+    private String email;
+
+    @Column(name = "avatar", columnDefinition = "varchar(128) COMMENT '头像'")
+    private String avatar;
 
     public int getUserId() {
         return userId;
@@ -47,6 +53,14 @@ public class UserPO {
         this.account = account;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -55,12 +69,20 @@ public class UserPO {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
 }

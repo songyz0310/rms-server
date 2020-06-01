@@ -34,10 +34,10 @@ public class MessagePO {
     private String simpleContent;
 
     @Column(name = "status", columnDefinition = "tinyint unsigned DEFAULT 0 NOT NULL COMMENT '状态 : 0，草稿，1，已生效'")
-    private short status;
+    private byte status;
 
     @Column(name = "is_delete", columnDefinition = "tinyint unsigned DEFAULT 0 NOT NULL COMMENT '是否已删除 : 0，未删除，1，已删除（回收站），2，已彻底删除'")
-    private short isDelete;
+    private byte isDelete;
 
     @Column(name = "sender", updatable = false, columnDefinition = "int(10) unsigned NOT NULL COMMENT '发送者'")
     private int sender;
@@ -86,19 +86,19 @@ public class MessagePO {
         this.simpleContent = simpleContent;
     }
 
-    public short getStatus() {
+    public byte getStatus() {
         return status;
     }
 
-    public void setStatus(short status) {
+    public void setStatus(byte status) {
         this.status = status;
     }
 
-    public short getIsDelete() {
+    public byte getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(short isDelete) {
+    public void setIsDelete(byte isDelete) {
         this.isDelete = isDelete;
     }
 

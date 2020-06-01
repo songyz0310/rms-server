@@ -16,7 +16,7 @@ public class PageResult<T> {
         this.data = data;
     }
 
-    public PageResult(int pageNo, int pageSize, int total, List<T> data) {
+    public PageResult(int pageNo, int pageSize, long total, List<T> data) {
         super();
         this.pageNo = pageNo;
         this.pageSize = pageSize;
