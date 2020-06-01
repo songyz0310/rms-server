@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<Property name="sys.logPath">./logs</Property>
+	</Properties>
+	<appenders>
+		<console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%-5p] %d{yyyy-MM-dd HH:mm:ss.SSS} (%F:%L) %m%n" />
+		</console>
+		<RollingFile name="sysall"
+			fileName="${sys.logPath}/system_all.log"
+			filePattern="${sys.logPath}/system_all-%d{yyyy-MM-dd}-%i.log"
+			Append="true">
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout charset="UTF-8"
+				pattern="[%p] %X %d{yyyy-MM-dd HH:mm:ss.SSS} (%F:%L) %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="100 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+	</appenders>
+	<loggers>
+		<root level="info">
+			<appender-ref ref="Console" />
+			<appender-ref ref="sysall" />
+		</root>
+	</loggers>
+</configuration>
