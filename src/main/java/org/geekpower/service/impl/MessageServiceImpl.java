@@ -58,6 +58,9 @@ public class MessageServiceImpl implements IMessageService {
         Page<MessagePO> pageData = messageRepository.findAll(example, RepositoryUtils.initPageable(param));
 
         List<MessageDTO> messageList = BeanCopier.copyList(pageData.getContent(), MessageDTO.class);
+        messageList.forEach(message -> {
+            message.setSendUser(BeanCopier.copy(userRepository.findById(message.getSender()).get(), UserDTO.class));
+        });
         PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
 
         // 是否需要总页数
@@ -90,7 +93,12 @@ public class MessageServiceImpl implements IMessageService {
 
         List<MessageDTO> messageList = BeanCopier.copyList(pageData.getContent(), MessageDTO.class);
         messageList.forEach(message -> {
-            message.setSendUser(BeanCopier.copy(userRepository.getOne(message.getSender()), UserDTO.class));
+            // 查询收件人
+            List<Integer> recipients = messageRecipientRepository.queryByMessageId(message.getMessageId()).stream()
+                    .map(po -> po.getRecipient()).collect(Collectors.toList());
+
+            message.setRecipientUsers(BeanCopier.copyList(userRepository.findAllById(recipients), UserDTO.class));
+
         });
 
         PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);

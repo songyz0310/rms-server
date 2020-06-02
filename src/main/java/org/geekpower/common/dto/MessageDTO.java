@@ -1,6 +1,7 @@
 package org.geekpower.common.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -22,7 +23,7 @@ public class MessageDTO {
     private Integer refMessageId;
 
     private UserDTO sendUser;
-    private UserDTO recipientUser;
+    private List<UserDTO> recipientUsers;
     private MessageDTO refMessage;
 
     public int getMessageId() {
@@ -121,12 +122,12 @@ public class MessageDTO {
         this.sendUser = sendUser;
     }
 
-    public UserDTO getRecipientUser() {
-        return recipientUser;
+    public List<UserDTO> getRecipientUsers() {
+        return recipientUsers;
     }
 
-    public void setRecipientUser(UserDTO recipientUser) {
-        this.recipientUser = recipientUser;
+    public void setRecipientUsers(List<UserDTO> recipientUsers) {
+        this.recipientUsers = recipientUsers;
     }
 
     public MessageDTO getRefMessage() {
