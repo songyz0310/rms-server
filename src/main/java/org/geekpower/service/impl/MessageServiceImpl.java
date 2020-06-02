@@ -15,6 +15,7 @@ import org.geekpower.common.enums.IsOrNo;
 import org.geekpower.common.enums.MessageStatus;
 import org.geekpower.entity.MessagePO;
 import org.geekpower.entity.MessageRecipientPO;
+import org.geekpower.form.DeleteMessageParam;
 import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
 import org.geekpower.repository.IMessageRecipientRepository;
@@ -27,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -84,31 +84,6 @@ public class MessageServiceImpl implements IMessageService {
             po.setUpdateTime(now);
             return po;
         }).collect(Collectors.toList());
-    }
-
-    @Override
-    public PageResult<MessageDTO> getRecipientMessages(PageParam param) {
-        UserDTO user = CurrentContext.getUser();
-        MessagePO filter = new MessagePO();
-        filter.setStatus(MessageStatus.FORMAL.getCode());
-        filter.setIsDelete(Deleted.NO.getCode());
-        filter.setSender(user.getUserId());
-
-        // 创建匹配器，即如何使用查询条件
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withMatcher("isDelete", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withMatcher("sender", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withIgnorePaths("messageId", "messageTitle", "richContent", "simpleContent", "createTime",
-                        "updateTime", "sendTime", "refMessageId");
-
-        Example<MessagePO> example = Example.of(filter, exampleMatcher);
-
-        Page<MessagePO> pageData = messageRepository.findAll(example, RepositoryUtils.initPageable(param));
-
-        return convertResultData(param, pageData, dto -> {
-            dto.setSendUser(BeanCopier.copy(userRepository.findById(dto.getSender()).get(), UserDTO.class));
-        });
     }
 
     @Override
@@ -170,73 +145,6 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public PageResult<MessageDTO> getDeletedMessages(PageParam param) {
-        int userId = CurrentContext.getUser().getUserId();
-
-        Pageable pageable = RepositoryUtils.initPageable(param);
-        Page<Integer> pageData = messageRepository.queryDeletedIds(userId, Deleted.IS.getCode(), pageable);
-
-        List<MessageDTO> messageList = BeanCopier.copyList(messageRepository.findAllById(pageData), MessageDTO.class);
-
-        messageList.forEach(dto -> {
-            // 查询发件人
-            dto.setSendUser(BeanCopier.copy(userRepository.findById(dto.getSender()).get(), UserDTO.class));
-            // 查询收件人
-            List<Integer> recipients = messageRecipientRepository.queryByMessageId(dto.getMessageId()).stream()
-                    .map(po -> po.getRecipient()).collect(Collectors.toList());
-
-            dto.setRecipientUsers(BeanCopier.copyList(userRepository.findAllById(recipients), UserDTO.class));
-        });
-
-        PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
-
-        // 是否需要总页数
-        if (param.isNeedTotal()) {
-            result.setTotal(pageData.getTotalElements());
-        }
-
-        return result;
-    }
-
-    @Override
-    public PageResult<MessageDTO> getRubbishMessages(PageParam param) {
-        UserDTO user = CurrentContext.getUser();
-        MessageRecipientPO filter = new MessageRecipientPO();
-        filter.setIsDelete(Deleted.NO.getCode());
-        filter.setIsRubbish(IsOrNo.IS.getCode());
-        filter.setRecipient(user.getUserId());
-
-        // 创建匹配器，即如何使用查询条件
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("isDelete", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withMatcher("isRubbish", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withMatcher("recipient", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
-                .withIgnorePaths("mrId", "messageId", "isRead", "readTime", "updateTime");
-
-        Example<MessageRecipientPO> example = Example.of(filter, exampleMatcher);
-
-        Page<MessageRecipientPO> pageData = messageRecipientRepository.findAll(example,
-                RepositoryUtils.initPageable(param));
-
-        List<MessagePO> list = messageRepository
-                .findAllById(pageData.stream().map(po -> po.getMessageId()).collect(Collectors.toList()));
-
-        List<MessageDTO> messageList = BeanCopier.copyList(list, MessageDTO.class);
-        messageList.forEach(dto -> {
-            dto.setSendUser(BeanCopier.copy(userRepository.findById(dto.getSender()).get(), UserDTO.class));
-        });
-
-        PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
-
-        // 是否需要总页数
-        if (param.isNeedTotal()) {
-            result.setTotal(pageData.getTotalElements());
-        }
-
-        return result;
-    }
-
-    @Override
     public Integer createFormalMessage(MessageParam param) {
 
         MessagePO messagePO = createMessagePO(param, MessageStatus.FORMAL);
@@ -257,6 +165,18 @@ public class MessageServiceImpl implements IMessageService {
         messageRecipientRepository.saveAll(createMessageRecipientPOs(param.getRecipients(), messagePO.getMessageId()));
 
         return messagePO.getMessageId();
+    }
+
+    @Override
+    public void deleteMessage(DeleteMessageParam param) {
+        List<MessagePO> pos = messageRepository.findAllById(param.getIds());
+        Date now = new Date();
+        pos.forEach(po -> {
+            po.setIsDelete(Deleted.IS.getCode());
+            po.setUpdateTime(now);
+        });
+
+        messageRepository.saveAll(pos);
     }
 
 }

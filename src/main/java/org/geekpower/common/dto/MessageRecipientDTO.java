@@ -5,9 +5,17 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class MessageDTO {
+public class MessageRecipientDTO {
 
+    private int mrId;
     private int messageId;
+    private int recipient;
+    private byte isRubbish;
+    private byte isRead;
+    private Date readTime;
+    private Date updateTime;
+
+    /*********************************************/
     private String messageTitle;
     private String richContent;
     private String simpleContent;
@@ -16,14 +24,19 @@ public class MessageDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date sendTime;
     private Integer refMessageId;
-
     private UserDTO sendUser;
     private List<UserDTO> recipientUsers;
     private MessageDTO refMessage;
+
+    public int getMrId() {
+        return mrId;
+    }
+
+    public void setMrId(int mrId) {
+        this.mrId = mrId;
+    }
 
     public int getMessageId() {
         return messageId;
@@ -31,6 +44,46 @@ public class MessageDTO {
 
     public void setMessageId(int messageId) {
         this.messageId = messageId;
+    }
+
+    public int getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(int recipient) {
+        this.recipient = recipient;
+    }
+
+    public byte getIsRubbish() {
+        return isRubbish;
+    }
+
+    public void setIsRubbish(byte isRubbish) {
+        this.isRubbish = isRubbish;
+    }
+
+    public byte getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(byte isRead) {
+        this.isRead = isRead;
+    }
+
+    public Date getReadTime() {
+        return readTime;
+    }
+
+    public void setReadTime(Date readTime) {
+        this.readTime = readTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getMessageTitle() {
@@ -79,14 +132,6 @@ public class MessageDTO {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Date getSendTime() {

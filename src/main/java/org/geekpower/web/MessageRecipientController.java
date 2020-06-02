@@ -5,41 +5,40 @@ import org.geekpower.common.ParameterValidator;
 import org.geekpower.common.RpcResponse;
 import org.geekpower.common.Tuple;
 import org.geekpower.common.dto.MessageDTO;
+import org.geekpower.common.dto.MessageRecipientDTO;
 import org.geekpower.form.DeleteMessageParam;
-import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
-import org.geekpower.service.IMessageService;
+import org.geekpower.service.IMessageRecipientService;
 import org.geekpower.utils.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/message")
-public class MessageController {
+public class MessageRecipientController {
 
-    private static Logger logger = LoggerFactory.getLogger(MessageController.class);
+    private static Logger logger = LoggerFactory.getLogger(MessageRecipientController.class);
 
     @Autowired
-    private IMessageService messageService;
+    private IMessageRecipientService messageRecipientService;
 
     /**
-     * 发件箱列表
+     * 收件箱列表
      * 
      * @param param
      * @return
      */
-    @GetMapping("/sended/list")
-    public RpcResponse<PageResult<MessageDTO>> sendedList(PageParam param) {
-        logger.info("发件箱查询参数:{}", GsonUtil.toJson(param));
+    @GetMapping("/recipient/list")
+    public RpcResponse<PageResult<MessageRecipientDTO>> recipientList(PageParam param) {
+        logger.info("收件箱查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageService.getSendedMessages(param));
+            return new RpcResponse<>(messageRecipientService.getRecipientMessages(param));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
@@ -48,16 +47,16 @@ public class MessageController {
     }
 
     /**
-     * 草稿箱列表
+     * 垃圾箱列表
      * 
      * @param param
      * @return
      */
-    @GetMapping("/draft/list")
-    public RpcResponse<PageResult<MessageDTO>> draftList(PageParam param) {
-        logger.info("草稿箱查询参数:{}", GsonUtil.toJson(param));
+    @GetMapping("/rubbish/list")
+    public RpcResponse<PageResult<MessageDTO>> rubbishList(PageParam param) {
+        logger.info("垃圾箱查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageService.getDraftMessages(param));
+            return new RpcResponse<>(messageRecipientService.getRubbishMessages(param));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
@@ -65,11 +64,17 @@ public class MessageController {
         }
     }
 
-    @PostMapping("/create/formal")
-    public RpcResponse<Integer> createFormalMessage(@RequestBody MessageParam param) {
-        logger.info("创建正式消息:{}", GsonUtil.toJson(param));
+    /**
+     * 已删除列表
+     * 
+     * @param param
+     * @return
+     */
+    @GetMapping("/deleted/list")
+    public RpcResponse<PageResult<MessageDTO>> deletedList(PageParam param) {
+        logger.info("已删除查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageService.createFormalMessage(param));
+            return new RpcResponse<>(messageRecipientService.getDeletedMessages(param));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
@@ -77,23 +82,24 @@ public class MessageController {
         }
     }
 
-    @PostMapping("/create/draft")
-    public RpcResponse<Integer> createDraftMessage(@RequestBody MessageParam param) {
-        logger.info("创建草稿消息:{}", GsonUtil.toJson(param));
-        try {
-            return new RpcResponse<>(messageService.createDraftMessage(param));
-        }
-        catch (Exception exp) {
-            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
-            return new RpcResponse<>(error.getFirst(), error.getSecond());
-        }
-    }
-
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/recipient")
     public RpcResponse<Boolean> deleteRecipientMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("删除信息参数:{}", GsonUtil.toJson(param));
+        logger.info("删除收件箱参数:{}", GsonUtil.toJson(param));
         try {
-            messageService.deleteMessage(param);
+            messageRecipientService.deleteRecipientMessage(param);
+            return new RpcResponse<>(true);
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+    
+    @DeleteMapping("/delete/recipient/real")
+    public RpcResponse<Boolean> realDeleteRecipientMessage(@RequestBody DeleteMessageParam param) {
+        logger.info("删除收件箱参数:{}", GsonUtil.toJson(param));
+        try {
+            messageRecipientService.realDeleteRecipientMessage(param);
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
