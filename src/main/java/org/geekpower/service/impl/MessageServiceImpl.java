@@ -2,6 +2,8 @@ package org.geekpower.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.geekpower.common.CurrentContext;
@@ -37,6 +39,52 @@ public class MessageServiceImpl implements IMessageService {
     @Autowired
     private IMessageRecipientRepository messageRecipientRepository;
 
+    private PageResult<MessageDTO> convertResultData(PageParam param, Page<MessagePO> pageData,
+            Consumer<MessageDTO> consumer) {
+        List<MessageDTO> messageList = BeanCopier.copyList(pageData.getContent(), MessageDTO.class);
+        if (Objects.nonNull(consumer)) {
+            messageList.forEach(consumer::accept);
+        }
+        PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
+
+        // 是否需要总页数
+        if (param.isNeedTotal()) {
+            result.setTotal(pageData.getTotalElements());
+        }
+
+        return result;
+    }
+
+    private MessagePO createMessagePO(MessageParam param, MessageStatus status) {
+        Date now = new Date();
+        UserDTO user = CurrentContext.getUser();
+
+        MessagePO messagePO = BeanCopier.copy(param, MessagePO.class);
+        messagePO.setMessageId(null);
+        messagePO.setStatus(status.getCode());
+        messagePO.setIsDelete(Deleted.NO.getCode());
+        messagePO.setSender(user.getUserId());
+        messagePO.setCreateTime(now);
+        messagePO.setUpdateTime(now);
+        messagePO.setSendTime(now);
+
+        return messagePO;
+    }
+
+    private List<MessageRecipientPO> createMessageRecipientPOs(List<Integer> recipients, Integer messageId) {
+        Date now = new Date();
+        return recipients.stream().map(recipient -> {
+            MessageRecipientPO po = new MessageRecipientPO();
+            po.setMessageId(messageId);
+            po.setRecipient(recipient);
+            po.setIsDelete(Deleted.NO.getCode());
+            po.setIsRubbish(IsOrNo.NO.getCode());
+            po.setIsRead(IsOrNo.NO.getCode());
+            po.setUpdateTime(now);
+            return po;
+        }).collect(Collectors.toList());
+    }
+
     @Override
     public PageResult<MessageDTO> getRecipientMessages(PageParam param) {
         UserDTO user = CurrentContext.getUser();
@@ -57,22 +105,13 @@ public class MessageServiceImpl implements IMessageService {
 
         Page<MessagePO> pageData = messageRepository.findAll(example, RepositoryUtils.initPageable(param));
 
-        List<MessageDTO> messageList = BeanCopier.copyList(pageData.getContent(), MessageDTO.class);
-        messageList.forEach(message -> {
-            message.setSendUser(BeanCopier.copy(userRepository.findById(message.getSender()).get(), UserDTO.class));
+        return convertResultData(param, pageData, dto -> {
+            dto.setSendUser(BeanCopier.copy(userRepository.findById(dto.getSender()).get(), UserDTO.class));
         });
-        PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
-
-        // 是否需要总页数
-        if (param.isNeedTotal()) {
-            result.setTotal(pageData.getTotalElements());
-        }
-
-        return result;
     }
 
     @Override
-    public PageResult<MessageDTO> getSendMessages(PageParam param) {
+    public PageResult<MessageDTO> getSendedMessages(PageParam param) {
         UserDTO user = CurrentContext.getUser();
         MessagePO filter = new MessagePO();
         filter.setStatus(MessageStatus.FORMAL.getCode());
@@ -91,63 +130,65 @@ public class MessageServiceImpl implements IMessageService {
 
         Page<MessagePO> pageData = messageRepository.findAll(example, RepositoryUtils.initPageable(param));
 
-        List<MessageDTO> messageList = BeanCopier.copyList(pageData.getContent(), MessageDTO.class);
-        messageList.forEach(message -> {
+        return convertResultData(param, pageData, dto -> {
             // 查询收件人
-            List<Integer> recipients = messageRecipientRepository.queryByMessageId(message.getMessageId()).stream()
+            List<Integer> recipients = messageRecipientRepository.queryByMessageId(dto.getMessageId()).stream()
                     .map(po -> po.getRecipient()).collect(Collectors.toList());
 
-            message.setRecipientUsers(BeanCopier.copyList(userRepository.findAllById(recipients), UserDTO.class));
-
+            dto.setRecipientUsers(BeanCopier.copyList(userRepository.findAllById(recipients), UserDTO.class));
         });
+    }
 
-        PageResult<MessageDTO> result = new PageResult<>(param.getPageNo(), param.getPageSize(), messageList);
+    @Override
+    public PageResult<MessageDTO> getDraftMessages(PageParam param) {
+        UserDTO user = CurrentContext.getUser();
+        MessagePO filter = new MessagePO();
+        filter.setStatus(MessageStatus.DRAFT.getCode());
+        filter.setIsDelete(Deleted.NO.getCode());
+        filter.setSender(user.getUserId());
 
-        // 是否需要总页数
-        if (param.isNeedTotal()) {
-            result.setTotal(pageData.getTotalElements());
-        }
+        // 创建匹配器，即如何使用查询条件
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
+                .withMatcher("isDelete", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
+                .withMatcher("sender", ExampleMatcher.GenericPropertyMatchers.storeDefaultMatching())
+                .withIgnorePaths("messageId", "messageTitle", "richContent", "simpleContent", "createTime",
+                        "updateTime", "sendTime", "refMessageId");
 
-        return result;
+        Example<MessagePO> example = Example.of(filter, exampleMatcher);
+
+        Page<MessagePO> pageData = messageRepository.findAll(example, RepositoryUtils.initPageable(param));
+
+        return convertResultData(param, pageData, dto -> {
+            // 查询收件人
+            List<Integer> recipients = messageRecipientRepository.queryByMessageId(dto.getMessageId()).stream()
+                    .map(po -> po.getRecipient()).collect(Collectors.toList());
+
+            dto.setRecipientUsers(BeanCopier.copyList(userRepository.findAllById(recipients), UserDTO.class));
+        });
     }
 
     @Override
     public Integer createFormalMessage(MessageParam param) {
 
-        Date now = new Date();
-        UserDTO user = CurrentContext.getUser();
-
-        MessagePO messagePO = BeanCopier.copy(param, MessagePO.class);
-        messagePO.setMessageId(null);
-        messagePO.setStatus(MessageStatus.FORMAL.getCode());
-        messagePO.setIsDelete(Deleted.NO.getCode());
-        messagePO.setSender(user.getUserId());
-        messagePO.setCreateTime(now);
-        messagePO.setUpdateTime(now);
-        messagePO.setSendTime(now);
+        MessagePO messagePO = createMessagePO(param, MessageStatus.FORMAL);
 
         messageRepository.save(messagePO);
 
-        List<MessageRecipientPO> pos = param.getRecipients().stream().map(recipient -> {
-            MessageRecipientPO po = new MessageRecipientPO();
-            po.setMessageId(messagePO.getMessageId());
-            po.setRecipient(recipient);
-            po.setIsDelete(Deleted.NO.getCode());
-            po.setIsRubbish(IsOrNo.NO.getCode());
-            po.setIsRead(IsOrNo.NO.getCode());
-            po.setUpdateTime(now);
-            return po;
-        }).collect(Collectors.toList());
-
-        messageRecipientRepository.saveAll(pos);
+        messageRecipientRepository.saveAll(createMessageRecipientPOs(param.getRecipients(), messagePO.getMessageId()));
 
         return messagePO.getMessageId();
     }
 
     @Override
     public Integer createDraftMessage(MessageParam param) {
-        // TODO Auto-generated method stub
-        return null;
+        MessagePO messagePO = createMessagePO(param, MessageStatus.DRAFT);
+
+        messageRepository.save(messagePO);
+
+        messageRecipientRepository.saveAll(createMessageRecipientPOs(param.getRecipients(), messagePO.getMessageId()));
+
+        return messagePO.getMessageId();
     }
 
 }

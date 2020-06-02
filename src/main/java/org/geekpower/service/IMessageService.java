@@ -9,10 +9,13 @@ public interface IMessageService {
 
     PageResult<MessageDTO> getRecipientMessages(PageParam param);
 
-    PageResult<MessageDTO> getSendMessages(PageParam param);
+    PageResult<MessageDTO> getSendedMessages(PageParam param);
+    
+    PageResult<MessageDTO> getDraftMessages(PageParam param);
 
     Integer createFormalMessage(MessageParam param);
 
     Integer createDraftMessage(MessageParam param);
+
 
 }

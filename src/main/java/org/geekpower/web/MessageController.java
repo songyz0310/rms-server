@@ -51,11 +51,29 @@ public class MessageController {
      * @param param
      * @return
      */
-    @GetMapping("/send/list")
-    public RpcResponse<PageResult<MessageDTO>> sendList(PageParam param) {
+    @GetMapping("/sended/list")
+    public RpcResponse<PageResult<MessageDTO>> sendedList(PageParam param) {
         logger.info("发件箱查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageService.getSendMessages(param));
+            return new RpcResponse<>(messageService.getSendedMessages(param));
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+
+    /**
+     * 草稿箱列表
+     * 
+     * @param param
+     * @return
+     */
+    @GetMapping("/draft/list")
+    public RpcResponse<PageResult<MessageDTO>> draftList(PageParam param) {
+        logger.info("草稿箱查询参数:{}", GsonUtil.toJson(param));
+        try {
+            return new RpcResponse<>(messageService.getDraftMessages(param));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
