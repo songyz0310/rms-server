@@ -81,6 +81,42 @@ public class MessageController {
         }
     }
 
+    /**
+     * 垃圾箱列表
+     * 
+     * @param param
+     * @return
+     */
+    @GetMapping("/rubbish/list")
+    public RpcResponse<PageResult<MessageDTO>> rubbishList(PageParam param) {
+        logger.info("垃圾箱查询参数:{}", GsonUtil.toJson(param));
+        try {
+            return new RpcResponse<>(messageService.getRubbishMessages(param));
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+
+    /**
+     * 已删除列表
+     * 
+     * @param param
+     * @return
+     */
+    @GetMapping("/deleted/list")
+    public RpcResponse<PageResult<MessageDTO>> deletedList(PageParam param) {
+        logger.info("已删除查询参数:{}", GsonUtil.toJson(param));
+        try {
+            return new RpcResponse<>(messageService.getDeletedMessages(param));
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+
     @PostMapping("/create/formal")
     public RpcResponse<Integer> createFormalMessage(@RequestBody MessageParam param) {
         logger.info("创建正式消息:{}", GsonUtil.toJson(param));
