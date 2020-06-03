@@ -18,4 +18,6 @@ public interface IMessageService {
 
     void deleteMessage(DeleteMessageParam param);
 
+    void realDeleteMessage(DeleteMessageParam param);
+
 }

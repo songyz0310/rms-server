@@ -179,4 +179,16 @@ public class MessageServiceImpl implements IMessageService {
         messageRepository.saveAll(pos);
     }
 
+    @Override
+    public void realDeleteMessage(DeleteMessageParam param) {
+        List<MessagePO> pos = messageRepository.findAllById(param.getIds());
+        Date now = new Date();
+        pos.forEach(po -> {
+            po.setIsDelete(Deleted.REAL.getCode());
+            po.setUpdateTime(now);
+        });
+
+        messageRepository.saveAll(pos);
+    }
+
 }

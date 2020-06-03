@@ -90,10 +90,23 @@ public class MessageController {
     }
 
     @DeleteMapping("/delete")
-    public RpcResponse<Boolean> deleteRecipientMessage(@RequestBody DeleteMessageParam param) {
+    public RpcResponse<Boolean> deleteMessage(@RequestBody DeleteMessageParam param) {
         logger.info("删除信息参数:{}", GsonUtil.toJson(param));
         try {
             messageService.deleteMessage(param);
+            return new RpcResponse<>(true);
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+    
+    @DeleteMapping("/delete/real")
+    public RpcResponse<Boolean> realDeleteMessage(@RequestBody DeleteMessageParam param) {
+        logger.info("永久删除信息参数:{}", GsonUtil.toJson(param));
+        try {
+            messageService.realDeleteMessage(param);
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {

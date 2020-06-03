@@ -97,7 +97,7 @@ public class MessageRecipientController {
     
     @DeleteMapping("/delete/recipient/real")
     public RpcResponse<Boolean> realDeleteRecipientMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("删除收件箱参数:{}", GsonUtil.toJson(param));
+        logger.info("永久删除收件箱参数:{}", GsonUtil.toJson(param));
         try {
             messageRecipientService.realDeleteRecipientMessage(param);
             return new RpcResponse<>(true);
