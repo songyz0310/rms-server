@@ -2,7 +2,7 @@ package org.geekpower.form;
 
 import java.util.List;
 
-public class DeleteMessageParam {
+public class RevertMessageParam {
 
     private List<Integer> ids;
 

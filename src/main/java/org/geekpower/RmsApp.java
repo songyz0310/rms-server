@@ -10,11 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @createTime 2020-05-30 10:58:48
  */
 @SpringBootApplication
-public class MessageApp {
+public class RmsApp {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(MessageApp.class, args);
+		SpringApplication.run(RmsApp.class, args);
 
 	}
 

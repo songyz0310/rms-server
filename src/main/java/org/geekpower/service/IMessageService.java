@@ -5,6 +5,7 @@ import org.geekpower.common.dto.MessageDTO;
 import org.geekpower.form.DeleteMessageParam;
 import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
+import org.geekpower.form.RevertMessageParam;
 
 public interface IMessageService {
 
@@ -19,5 +20,7 @@ public interface IMessageService {
     void deleteMessage(DeleteMessageParam param);
 
     void realDeleteMessage(DeleteMessageParam param);
+
+    void revertMessage(RevertMessageParam param);
 
 }

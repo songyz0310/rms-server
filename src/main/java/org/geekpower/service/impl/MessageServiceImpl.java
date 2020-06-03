@@ -18,6 +18,7 @@ import org.geekpower.entity.MessageRecipientPO;
 import org.geekpower.form.DeleteMessageParam;
 import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
+import org.geekpower.form.RevertMessageParam;
 import org.geekpower.repository.IMessageRecipientRepository;
 import org.geekpower.repository.IMessageRepository;
 import org.geekpower.repository.IUserRepository;
@@ -185,6 +186,18 @@ public class MessageServiceImpl implements IMessageService {
         Date now = new Date();
         pos.forEach(po -> {
             po.setIsDelete(Deleted.REAL.getCode());
+            po.setUpdateTime(now);
+        });
+
+        messageRepository.saveAll(pos);
+    }
+
+    @Override
+    public void revertMessage(RevertMessageParam param) {
+        List<MessagePO> pos = messageRepository.findAllById(param.getIds());
+        Date now = new Date();
+        pos.forEach(po -> {
+            po.setIsDelete(Deleted.NO.getCode());
             po.setUpdateTime(now);
         });
 
