@@ -8,6 +8,7 @@ import org.geekpower.common.dto.MessageDTO;
 import org.geekpower.form.DeleteMessageParam;
 import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
+import org.geekpower.form.RevertMessageParam;
 import org.geekpower.service.IMessageService;
 import org.geekpower.utils.GsonUtil;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,6 +109,19 @@ public class SenderMessageController {
         logger.info("永久删除信息参数:{}", GsonUtil.toJson(param));
         try {
             messageService.realDeleteMessage(param);
+            return new RpcResponse<>(true);
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+    
+    @PutMapping("/revert")
+    public RpcResponse<Boolean> revertMessage(@RequestBody RevertMessageParam param) {
+        logger.info("恢复删除的信息参数:{}", GsonUtil.toJson(param));
+        try {
+            messageService.revertMessage(param);
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
