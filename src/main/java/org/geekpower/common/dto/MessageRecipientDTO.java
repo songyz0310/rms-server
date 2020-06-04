@@ -1,34 +1,23 @@
 package org.geekpower.common.dto;
 
 import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class MessageRecipientDTO {
+public class MessageRecipientDTO extends MessageDTO {
 
     private int mrId;
     private int messageId;
     private int recipient;
     private byte isRubbish;
     private byte isRead;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date readTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     /*********************************************/
-    private String messageTitle;
-    private String richContent;
-    private String simpleContent;
-    private short status;
-    private int sender;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date sendTime;
-    private Integer refMessageId;
-    private UserDTO sendUser;
-    private List<UserDTO> recipientUsers;
-    private MessageDTO refMessage;
+    private UserDTO recipientUser;
 
     public int getMrId() {
         return mrId;
@@ -86,92 +75,12 @@ public class MessageRecipientDTO {
         this.updateTime = updateTime;
     }
 
-    public String getMessageTitle() {
-        return messageTitle;
+    public UserDTO getRecipientUser() {
+        return recipientUser;
     }
 
-    public void setMessageTitle(String messageTitle) {
-        this.messageTitle = messageTitle;
-    }
-
-    public String getRichContent() {
-        return richContent;
-    }
-
-    public void setRichContent(String richContent) {
-        this.richContent = richContent;
-    }
-
-    public String getSimpleContent() {
-        return simpleContent;
-    }
-
-    public void setSimpleContent(String simpleContent) {
-        this.simpleContent = simpleContent;
-    }
-
-    public short getStatus() {
-        return status;
-    }
-
-    public void setStatus(short status) {
-        this.status = status;
-    }
-
-    public int getSender() {
-        return sender;
-    }
-
-    public void setSender(int sender) {
-        this.sender = sender;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public Integer getRefMessageId() {
-        return refMessageId;
-    }
-
-    public void setRefMessageId(Integer refMessageId) {
-        this.refMessageId = refMessageId;
-    }
-
-    public UserDTO getSendUser() {
-        return sendUser;
-    }
-
-    public void setSendUser(UserDTO sendUser) {
-        this.sendUser = sendUser;
-    }
-
-    public List<UserDTO> getRecipientUsers() {
-        return recipientUsers;
-    }
-
-    public void setRecipientUsers(List<UserDTO> recipientUsers) {
-        this.recipientUsers = recipientUsers;
-    }
-
-    public MessageDTO getRefMessage() {
-        return refMessage;
-    }
-
-    public void setRefMessage(MessageDTO refMessage) {
-        this.refMessage = refMessage;
+    public void setRecipientUser(UserDTO recipientUser) {
+        this.recipientUser = recipientUser;
     }
 
 }

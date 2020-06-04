@@ -1,11 +1,12 @@
 package org.geekpower.service;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.geekpower.common.PageResult;
 import org.geekpower.common.dto.MessageRecipientDTO;
-import org.geekpower.form.DeleteMessageParam;
-import org.geekpower.form.MarkMessageParam;
+import org.geekpower.entity.MessageRecipientPO;
 import org.geekpower.form.PageParam;
-import org.geekpower.form.RevertMessageParam;
 
 public interface IMessageRecipientService {
 
@@ -15,11 +16,5 @@ public interface IMessageRecipientService {
 
     PageResult<MessageRecipientDTO> getDeletedMessages(PageParam param);
 
-    void deleteRecipientMessage(DeleteMessageParam param);
-
-    void realDeleteRecipientMessage(DeleteMessageParam param);
-
-    void markMessage(MarkMessageParam param);
-
-    void revertMessage(RevertMessageParam param);
+    void batchUpdate(Consumer<MessageRecipientPO> action, List<Integer> ids);
 }

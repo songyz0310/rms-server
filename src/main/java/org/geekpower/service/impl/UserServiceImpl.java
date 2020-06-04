@@ -9,7 +9,6 @@ import org.geekpower.common.BaseException;
 import org.geekpower.common.PageResult;
 import org.geekpower.common.dto.UserDTO;
 import org.geekpower.common.dto.UserSessionDTO;
-import org.geekpower.entity.MessagePO;
 import org.geekpower.entity.UserPO;
 import org.geekpower.form.PageParam;
 import org.geekpower.form.UserParam;
