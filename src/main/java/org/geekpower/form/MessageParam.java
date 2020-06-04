@@ -4,19 +4,20 @@ import java.util.List;
 
 public class MessageParam {
 
-    private int messageId;
+    private Integer messageId;
     private String messageTitle;
     private String richContent;
     private String simpleContent;
     private Integer refMessageId;
 
+    private byte status;
     private List<Integer> recipients;
 
-    public int getMessageId() {
+    public Integer getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(int messageId) {
+    public void setMessageId(Integer messageId) {
         this.messageId = messageId;
     }
 
@@ -58,6 +59,14 @@ public class MessageParam {
 
     public void setRecipients(List<Integer> recipients) {
         this.recipients = recipients;
+    }
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        this.status = status;
     }
 
 }

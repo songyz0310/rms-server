@@ -1,7 +1,10 @@
 package org.geekpower.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.geekpower.common.BaseError;
@@ -53,9 +56,34 @@ public class UserServiceImpl implements IUserService {
                 userRepository.findAll(pageable) : //
                 userRepository.queryUserByUserNameLike(param.getSearch(), pageable);
 
-        List<UserDTO> messageList = BeanCopier.copyList(pageData.getContent(), UserDTO.class);
+        List<UserDTO> pageList = BeanCopier.copyList(pageData.getContent(), UserDTO.class);
 
-        return new PageResult<>(param.getPageNo(), param.getPageSize(), pageData.getTotalElements(), messageList);
+        // 必须包含的人员查询
+        if (Objects.nonNull(param.getIncludes())) {
+            Map<Integer, UserPO> map = userRepository.findAllById(param.getIncludes()).stream()
+                    .collect(Collectors.toMap(po -> po.getUserId(), po -> po));
+            for (UserDTO user : pageList) {
+                map.remove(user.getUserId());
+            }
+
+            for (UserPO po : map.values()) {
+                pageList.add(BeanCopier.copy(po, UserDTO.class));
+            }
+        }
+
+        // 查询排除的记录
+        if (Objects.nonNull(param.getExcludes())) {
+            List<UserDTO> result = new LinkedList<UserDTO>();
+            for (UserDTO user : pageList) {
+                if (param.getExcludes().contains(user.getUserId()) == false) {
+                    result.add(user);
+                }
+            }
+
+            pageList = result;
+        }
+
+        return new PageResult<>(param.getPageNo(), param.getPageSize(), pageData.getTotalElements(), pageList);
     }
 
 }

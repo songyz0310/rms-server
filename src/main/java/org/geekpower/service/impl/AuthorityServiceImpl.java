@@ -39,7 +39,7 @@ public class AuthorityServiceImpl implements IAuthorityService {
 
     private static Logger logger = LoggerFactory.getLogger(AuthorityServiceImpl.class);
 
-    private static final int EXP_HOUR = 1;
+    private static final int EXP_HOUR = 10;
     private static PublicKey PUBLIC_KEY = null;
     private static PrivateKey PRIVATE_KEY = null;
 

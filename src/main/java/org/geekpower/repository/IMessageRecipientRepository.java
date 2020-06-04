@@ -13,6 +13,8 @@ public interface IMessageRecipientRepository extends JpaRepository<MessageRecipi
 
     List<MessageRecipientPO> queryByMessageId(int messageId);
 
+    void deleteByMessageId(int messageId);
+
     @Query(value = "select a.message_id messageId,a.mr_id mrId from ("
             + "SELECT message_id,mr_id, update_time FROM tb_message_recipient WHERE recipient = ?1 AND is_delete = ?2 "
             + "UNION " + //

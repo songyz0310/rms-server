@@ -33,4 +33,11 @@ public class RepositoryUtils {
         }
     }
 
+    public static String getLimit(PageParam param) {
+        int end = param.getPageNo() * param.getPageSize();
+        int start = end - param.getPageSize();
+
+        return " limit " + start + "," + end;
+    }
+
 }

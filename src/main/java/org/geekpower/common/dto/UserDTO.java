@@ -1,5 +1,8 @@
 package org.geekpower.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private int userId;

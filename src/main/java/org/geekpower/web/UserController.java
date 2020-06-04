@@ -10,6 +10,7 @@ import org.geekpower.common.dto.UserSessionDTO;
 import org.geekpower.form.PageParam;
 import org.geekpower.form.UserParam;
 import org.geekpower.service.IUserService;
+import org.geekpower.utils.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserController {
 
     @PostMapping("/login")
     public RpcResponse<UserSessionDTO> login(@RequestBody UserParam param) {
-        logger.info(param.toString());
+        logger.info("登录参数:{}", GsonUtil.toJson(param));
         try {
             UserSessionDTO session = userService.login(param);
             CurrentContext.setUser(session);
@@ -44,7 +45,7 @@ public class UserController {
 
     @GetMapping("/list")
     public RpcResponse<PageResult<UserDTO>> getUserList(PageParam param) {
-        logger.info(param.toString());
+        logger.info("人员列表参数:{}", GsonUtil.toJson(param));
         try {
             return new RpcResponse<>(userService.queryUserList(param));
         }

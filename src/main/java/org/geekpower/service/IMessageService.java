@@ -1,26 +1,32 @@
 package org.geekpower.service;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.geekpower.common.PageResult;
 import org.geekpower.common.dto.MessageDTO;
-import org.geekpower.form.DeleteMessageParam;
+import org.geekpower.common.dto.MessageRecipientDTO;
+import org.geekpower.entity.MessagePO;
+import org.geekpower.entity.MessageRecipientPO;
 import org.geekpower.form.MessageParam;
 import org.geekpower.form.PageParam;
-import org.geekpower.form.RevertMessageParam;
 
 public interface IMessageService {
 
-    PageResult<MessageDTO> getSendedMessages(PageParam param);
+    PageResult<MessageDTO> getSendedMessages(PageParam param, byte status);
 
-    PageResult<MessageDTO> getDraftMessages(PageParam param);
+    PageResult<MessageRecipientDTO> getRecipientMessages(PageParam param, byte isRubbish);
 
-    Integer createFormalMessage(MessageParam param);
+    PageResult<MessageRecipientDTO> getDeletedMessages(PageParam param);
 
-    Integer createDraftMessage(MessageParam param);
+    MessageDTO getMessagesDetail(int messageId);
 
-    void deleteMessage(DeleteMessageParam param);
+    int createMessage(MessageParam param);
 
-    void realDeleteMessage(DeleteMessageParam param);
+    int updateMessage(MessageParam param);
 
-    void revertMessage(RevertMessageParam param);
+    void batchUpdateMessage(Consumer<MessagePO> action, List<Integer> ids);
+
+    void batchUpdateRecipient(Consumer<MessageRecipientPO> action, List<Integer> ids);
 
 }

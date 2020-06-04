@@ -1,5 +1,6 @@
 package org.geekpower.web;
 
+import java.util.Date;
 import java.util.function.Consumer;
 
 import org.geekpower.common.PageResult;
@@ -15,7 +16,7 @@ import org.geekpower.form.DeleteMessageParam;
 import org.geekpower.form.MarkMessageParam;
 import org.geekpower.form.PageParam;
 import org.geekpower.form.RevertMessageParam;
-import org.geekpower.service.IMessageRecipientService;
+import org.geekpower.service.IMessageService;
 import org.geekpower.utils.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class ReceiverMessageController {
     private static Logger logger = LoggerFactory.getLogger(ReceiverMessageController.class);
 
     @Autowired
-    private IMessageRecipientService messageRecipientService;
+    private IMessageService messageService;
 
     /**
      * 收件箱列表
@@ -46,7 +47,7 @@ public class ReceiverMessageController {
     public RpcResponse<PageResult<MessageRecipientDTO>> formalList(PageParam param) {
         logger.info("收件箱查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageRecipientService.getRecipientMessages(param));
+            return new RpcResponse<>(messageService.getRecipientMessages(param, IsOrNo.NO.getCode()));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
@@ -64,7 +65,7 @@ public class ReceiverMessageController {
     public RpcResponse<PageResult<MessageRecipientDTO>> rubbishList(PageParam param) {
         logger.info("垃圾箱查询参数:{}", GsonUtil.toJson(param));
         try {
-            return new RpcResponse<>(messageRecipientService.getRubbishMessages(param));
+            return new RpcResponse<>(messageService.getRecipientMessages(param, IsOrNo.IS.getCode()));
         }
         catch (Exception exp) {
             Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
@@ -76,7 +77,7 @@ public class ReceiverMessageController {
     public RpcResponse<Boolean> deleteMessage(@RequestBody DeleteMessageParam param) {
         logger.info("删除收件箱参数:{}", GsonUtil.toJson(param));
         try {
-            messageRecipientService.batchUpdate(po -> po.setIsDelete(Deleted.IS.getCode()), param.getIds());
+            messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.IS.getCode()), param.getIds());
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
@@ -89,7 +90,7 @@ public class ReceiverMessageController {
     public RpcResponse<Boolean> realDeleteMessage(@RequestBody DeleteMessageParam param) {
         logger.info("永久删除收件箱参数:{}", GsonUtil.toJson(param));
         try {
-            messageRecipientService.batchUpdate(po -> po.setIsDelete(Deleted.REAL.getCode()), param.getIds());
+            messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.REAL.getCode()), param.getIds());
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
@@ -105,10 +106,16 @@ public class ReceiverMessageController {
             Consumer<MessageRecipientPO> action = null;
             switch (MarkType.get(param.getType())) {
                 case IS_READED:
-                    action = po -> po.setIsRead(IsOrNo.IS.getCode());
+                    action = po -> {
+                        po.setIsRead(IsOrNo.IS.getCode());
+                        po.setReadTime(null);
+                    };
                     break;
                 case UN_READ:
-                    action = po -> po.setIsRead(IsOrNo.NO.getCode());
+                    action = po -> {
+                        po.setIsRead(IsOrNo.NO.getCode());
+                        po.setReadTime(new Date());
+                    };
                     break;
                 case IS_RUBBISH:
                     action = po -> po.setIsRubbish(IsOrNo.IS.getCode());
@@ -118,7 +125,7 @@ public class ReceiverMessageController {
                     break;
             }
 
-            messageRecipientService.batchUpdate(action, param.getIds());
+            messageService.batchUpdateRecipient(action, param.getIds());
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
@@ -131,8 +138,7 @@ public class ReceiverMessageController {
     public RpcResponse<Boolean> revertMessage(@RequestBody RevertMessageParam param) {
         logger.info("恢复删除的信息参数:{}", GsonUtil.toJson(param));
         try {
-
-            messageRecipientService.batchUpdate(po -> po.setIsDelete(Deleted.NO.getCode()), param.getIds());
+            messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.NO.getCode()), param.getIds());
             return new RpcResponse<>(true);
         }
         catch (Exception exp) {
