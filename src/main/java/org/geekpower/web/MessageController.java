@@ -33,7 +33,9 @@ public class MessageController {
      */
     @GetMapping("/deleted/list")
     public RpcResponse<PageResult<MessageRecipientDTO>> deletedList(PageParam param) {
-        logger.info("已删除查询参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("已删除查询参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(messageService.getDeletedMessages(param));
         }
@@ -51,7 +53,9 @@ public class MessageController {
      */
     @GetMapping("/detail")
     public RpcResponse<MessageDTO> deletedList(int messageId) {
-        logger.info("获取邮件信息参数:{}", messageId);
+        if (logger.isDebugEnabled())
+            logger.debug("获取邮件信息参数:{}", messageId);
+
         try {
             return new RpcResponse<>(messageService.getMessagesDetail(messageId));
         }

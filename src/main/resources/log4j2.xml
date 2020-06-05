@@ -24,7 +24,7 @@
 		</RollingFile>
 	</appenders>
 	<loggers>
-		<root level="info">
+		<root level="${log.level}">
 			<appender-ref ref="Console" />
 			<appender-ref ref="sysall" />
 		</root>

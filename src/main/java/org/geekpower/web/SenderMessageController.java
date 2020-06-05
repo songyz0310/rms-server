@@ -43,7 +43,9 @@ public class SenderMessageController {
      */
     @GetMapping("/formal/list")
     public RpcResponse<PageResult<MessageDTO>> formalList(PageParam param) {
-        logger.info("发件箱查询参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("发件箱查询参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(messageService.getSendedMessages(param, MessageStatus.FORMAL.getCode()));
         }
@@ -61,7 +63,9 @@ public class SenderMessageController {
      */
     @GetMapping("/draft/list")
     public RpcResponse<PageResult<MessageDTO>> draftList(PageParam param) {
-        logger.info("草稿箱查询参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("草稿箱查询参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(messageService.getSendedMessages(param, MessageStatus.DRAFT.getCode()));
         }
@@ -73,7 +77,9 @@ public class SenderMessageController {
 
     @PostMapping("/save/formal")
     public RpcResponse<Integer> saveFormalMessage(@RequestBody MessageParam param) {
-        logger.info("保存正式消息:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("保存正式消息:{}", GsonUtil.toJson(param));
+
         try {
             param.setStatus(MessageStatus.FORMAL.getCode());
             if (Objects.isNull(param.getMessageId())) {
@@ -91,7 +97,9 @@ public class SenderMessageController {
 
     @PostMapping("/save/draft")
     public RpcResponse<Integer> saveDraftMessage(@RequestBody MessageParam param) {
-        logger.info("保存草稿消息:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("保存草稿消息:{}", GsonUtil.toJson(param));
+
         try {
             param.setStatus(MessageStatus.DRAFT.getCode());
             if (Objects.isNull(param.getMessageId())) {
@@ -109,7 +117,9 @@ public class SenderMessageController {
 
     @DeleteMapping("/delete")
     public RpcResponse<Boolean> deleteMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("删除信息参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("删除信息参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateMessage(po -> po.setIsDelete(Deleted.IS.getCode()), param.getIds());
             return new RpcResponse<>(true);
@@ -122,7 +132,9 @@ public class SenderMessageController {
 
     @DeleteMapping("/real/delete")
     public RpcResponse<Boolean> realDeleteMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("永久删除信息参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("永久删除信息参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateMessage(po -> po.setIsDelete(Deleted.REAL.getCode()), param.getIds());
             return new RpcResponse<>(true);
@@ -135,7 +147,9 @@ public class SenderMessageController {
 
     @PutMapping("/revert")
     public RpcResponse<Boolean> revertMessage(@RequestBody RevertMessageParam param) {
-        logger.info("恢复删除的信息参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("恢复删除的信息参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateMessage(po -> po.setIsDelete(Deleted.NO.getCode()), param.getIds());
             return new RpcResponse<>(true);

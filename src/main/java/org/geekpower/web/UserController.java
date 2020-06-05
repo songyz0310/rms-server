@@ -31,7 +31,9 @@ public class UserController {
 
     @PostMapping("/login")
     public RpcResponse<UserSessionDTO> login(@RequestBody UserParam param) {
-        logger.info("登录参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("登录参数:{}", GsonUtil.toJson(param));
+
         try {
             UserSessionDTO session = userService.login(param);
             CurrentContext.setUser(session);
@@ -45,7 +47,9 @@ public class UserController {
 
     @GetMapping("/list")
     public RpcResponse<PageResult<UserDTO>> getUserList(PageParam param) {
-        logger.info("人员列表参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("查询人员列表参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(userService.queryUserList(param));
         }

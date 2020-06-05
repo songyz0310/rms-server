@@ -45,7 +45,9 @@ public class ReceiverMessageController {
      */
     @GetMapping("/formal/list")
     public RpcResponse<PageResult<MessageRecipientDTO>> formalList(PageParam param) {
-        logger.info("收件箱查询参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("收件箱查询参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(messageService.getRecipientMessages(param, IsOrNo.NO.getCode()));
         }
@@ -63,7 +65,9 @@ public class ReceiverMessageController {
      */
     @GetMapping("/rubbish/list")
     public RpcResponse<PageResult<MessageRecipientDTO>> rubbishList(PageParam param) {
-        logger.info("垃圾箱查询参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("垃圾箱查询参数:{}", GsonUtil.toJson(param));
+
         try {
             return new RpcResponse<>(messageService.getRecipientMessages(param, IsOrNo.IS.getCode()));
         }
@@ -75,7 +79,9 @@ public class ReceiverMessageController {
 
     @DeleteMapping("/delete")
     public RpcResponse<Boolean> deleteMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("删除收件箱参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("删除收件箱参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.IS.getCode()), param.getIds());
             return new RpcResponse<>(true);
@@ -88,7 +94,9 @@ public class ReceiverMessageController {
 
     @DeleteMapping("/real/delete")
     public RpcResponse<Boolean> realDeleteMessage(@RequestBody DeleteMessageParam param) {
-        logger.info("永久删除收件箱参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("永久删除收件箱参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.REAL.getCode()), param.getIds());
             return new RpcResponse<>(true);
@@ -101,7 +109,9 @@ public class ReceiverMessageController {
 
     @PutMapping("/mark")
     public RpcResponse<Boolean> markMessage(@RequestBody MarkMessageParam param) {
-        logger.info("标记信息参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("标记信息参数:{}", GsonUtil.toJson(param));
+
         try {
             Consumer<MessageRecipientPO> action = null;
             switch (MarkType.get(param.getType())) {
@@ -136,7 +146,9 @@ public class ReceiverMessageController {
 
     @PutMapping("/revert")
     public RpcResponse<Boolean> revertMessage(@RequestBody RevertMessageParam param) {
-        logger.info("恢复删除的信息参数:{}", GsonUtil.toJson(param));
+        if (logger.isDebugEnabled())
+            logger.debug("恢复删除的信息参数:{}", GsonUtil.toJson(param));
+
         try {
             messageService.batchUpdateRecipient(po -> po.setIsDelete(Deleted.NO.getCode()), param.getIds());
             return new RpcResponse<>(true);

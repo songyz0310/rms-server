@@ -32,6 +32,11 @@ public class AuthorizedInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
+
+        if (Objects.equals(request.getMethod(), "OPTIONS")) {
+            return true;
+        }
+
         try {
             CurrentContext.init(request, authorityService);
             if (Objects.isNull(CurrentContext.getUser())) {
