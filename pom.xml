@@ -18,7 +18,7 @@
 
 		<!-- 指定SpringBoot版本 -->
 		<spring-boot.version>2.2.5.RELEASE</spring-boot.version>
-
+		<flowable.version>6.5.0</flowable.version>
 	</properties>
 
 	<!-- 声明依赖管理 -->
@@ -118,6 +118,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-spring-boot-starter</artifactId>
+			<version>${flowable.version}</version>
 		</dependency>
 
 	</dependencies>

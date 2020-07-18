@@ -11,6 +11,7 @@ public class UserDTO {
     private String userName;
     private String email;
     private String avatar;
+    private int roleId;
 
     public int getUserId() {
         return userId;
@@ -58,6 +59,14 @@ public class UserDTO {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
 }

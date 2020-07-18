@@ -41,6 +41,9 @@ public class UserPO implements Serializable {
     @Column(name = "avatar", columnDefinition = "varchar(128) COMMENT '头像'")
     private String avatar;
 
+    @Column(name = "role_id", columnDefinition = "int(10) COMMENT '角色ID'")
+    private Integer roleId;
+
     public int getUserId() {
         return userId;
     }
@@ -87,6 +90,14 @@ public class UserPO implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
 }

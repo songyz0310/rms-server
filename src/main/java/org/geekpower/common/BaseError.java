@@ -47,6 +47,11 @@ public enum BaseError {
     SEC_ACTIVATE_TIMEOUT(30007009), // 激活链接超时
     SEC_NEED_LOGIN(30007008), // 需要登录
 
+    APPLY_NOT_FOUND(40001001), // 申请不存在
+    GOODS_NOT_FOUND(40001002), // 商品不存在
+    GOODS_CAN_NOT_DEPLOY(40001003), // 商品不能申请发布
+    APPLY_CAN_NOT_OPERAT(40001004),// 申请不能操作
+
     ;
 
     private final int code;
