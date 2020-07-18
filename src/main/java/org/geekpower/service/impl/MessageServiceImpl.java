@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
@@ -29,15 +31,27 @@ import org.geekpower.repository.IUserRepository;
 import org.geekpower.service.IMessageService;
 import org.geekpower.utils.BeanCopier;
 import org.geekpower.utils.RepositoryUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MessageServiceImpl implements IMessageService {
+
+    private static Logger logger = LoggerFactory.getLogger(IMessageService.class);
+
+    @Value("${spring.mail.username}")
+    private String email;
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Autowired
     private EntityManager entityManager;
@@ -198,6 +212,20 @@ public class MessageServiceImpl implements IMessageService {
 
         if (Objects.equals(param.getStatus(), MessageStatus.FORMAL.getCode())) {
             messagePO.setSendTime(now);
+
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+                helper.setTo("1162442137@qq.com");
+                helper.setFrom(email);
+                helper.setSubject(param.getMessageTitle());
+                helper.setText(param.getRichContent(), true);
+                mailSender.send(message);
+            }
+            catch (MessagingException e) {
+                logger.error("发送邮件出错", e.getMessage(), e);
+            }
+
         }
 
         messageRepository.save(messagePO);

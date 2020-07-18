@@ -37,6 +37,12 @@
 
 	<!-- 依赖 -->
 	<dependencies>
+		<!-- 单元测试依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Spring Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -102,6 +108,17 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 
+		<!-- redis依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- 发送邮件依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
 	</dependencies>
 

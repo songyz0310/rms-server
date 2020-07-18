@@ -42,6 +42,9 @@ public enum BaseError {
     SEC_ENCRYPT_FAILED(30007005), // 加密异常
     SEC_DECRYPT_FAILED(30007006), // 解密异常
     SEC_ACCOUNT_EXPIRED(30007007), // 账号已过期
+    SEC_REPEAT_ACCOUNT(30007008), // 账号已经被占用
+    SEC_REPEAT_EMAIL(30007008), // 邮箱已经被占用
+    SEC_ACTIVATE_TIMEOUT(30007009), // 激活链接超时
     SEC_NEED_LOGIN(30007008), // 需要登录
 
     ;

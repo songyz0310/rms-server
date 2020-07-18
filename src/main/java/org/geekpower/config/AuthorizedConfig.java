@@ -23,6 +23,8 @@ public class AuthorizedConfig implements WebMvcConfigurer {
         registry.addInterceptor(authorizedInterceptor)//
                 .addPathPatterns("/**") // 拦截的路径
                 .excludePathPatterns("/user/login")// 排除的路径
+                .excludePathPatterns("/user/registe")// 排除的路径
+                .excludePathPatterns("/user/activate")// 排除的路径
         ;
     }
 }

@@ -1,9 +1,12 @@
 package org.geekpower.service.impl;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,17 +24,34 @@ import org.geekpower.service.IUserService;
 import org.geekpower.utils.BeanCopier;
 import org.geekpower.utils.RepositoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
+    @Value("${spring.mail.username}")
+    private String email;
+    @Value("${server.host}")
+    private String host;
+    @Value("${server.port}")
+    private String port;
+    @Value("${server.servlet.context-path}")
+    private String context;
+
+    @Autowired
+    private JavaMailSender mailSender;
     @Autowired
     private IUserRepository userRepository;
     @Autowired
     private IAuthorityService authorityService;
+    @Autowired
+    private RedisTemplate<String, Serializable> serializableRedisTemplate;
 
     public UserSessionDTO login(UserParam param) {
         UserPO userPO = userRepository.queryByAccount(param.getAccount());
@@ -46,6 +66,45 @@ public class UserServiceImpl implements IUserService {
         UserDTO userDTO = BeanCopier.copy(userPO, UserDTO.class);
 
         return authorityService.createSession(userDTO);
+    }
+
+    @Override
+    public boolean registe(UserParam param) {
+        long count = userRepository.countByAccount(param.getAccount());
+        if (count > 0) {
+            throw new BaseException(BaseError.SEC_REPEAT_ACCOUNT.getCode(), "账号已经被占用");
+        }
+
+        count = userRepository.countByEmail(param.getEmail());
+        if (count > 0) {
+            throw new BaseException(BaseError.SEC_REPEAT_EMAIL.getCode(), "邮箱已经被占用");
+        }
+
+        String key = UUID.randomUUID().toString();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(email);
+        message.setTo(param.getEmail());
+        message.setSubject("激活链接");
+        message.setText("您的激活链接：" + host + ":" + port + context + "/user/activate?key=" + key + " ,三十分钟有效");
+
+        serializableRedisTemplate.opsForValue().set(key, param, 30, TimeUnit.MINUTES);
+
+        mailSender.send(message);
+
+        return true;
+    }
+
+    @Override
+    public void activate(String key) {
+        UserParam user = (UserParam) serializableRedisTemplate.opsForValue().get(key);
+        if (Objects.isNull(user)) {
+            throw new BaseException(BaseError.SEC_ACTIVATE_TIMEOUT.getCode(), "激活链接超时");
+        }
+        serializableRedisTemplate.delete(key);
+        UserPO userPO = BeanCopier.copy(user, UserPO.class);
+
+        userRepository.save(userPO);
     }
 
     @Override

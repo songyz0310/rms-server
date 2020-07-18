@@ -45,6 +45,35 @@ public class UserController {
         }
     }
 
+    @PostMapping("/registe")
+    public RpcResponse<Boolean> registe(@RequestBody UserParam param) {
+        if (logger.isDebugEnabled())
+            logger.debug("注册参数:{}", GsonUtil.toJson(param));
+
+        try {
+            return new RpcResponse<>(userService.registe(param));
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return new RpcResponse<>(error.getFirst(), error.getSecond());
+        }
+    }
+
+    @GetMapping("/activate")
+    public String activate(String key) {
+        if (logger.isDebugEnabled())
+            logger.debug("激活参数:{}", key);
+
+        try {
+            userService.activate(key);
+            return "您的账号已激活，可以放心登录了！！！";
+        }
+        catch (Exception exp) {
+            Tuple.Pair<Integer, String> error = ParameterValidator.onException(exp);
+            return error.getSecond();
+        }
+    }
+
     @GetMapping("/list")
     public RpcResponse<PageResult<UserDTO>> getUserList(PageParam param) {
         if (logger.isDebugEnabled())

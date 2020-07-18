@@ -1,10 +1,17 @@
 package org.geekpower.form;
 
-public class UserParam {
+import java.io.Serializable;
+
+public class UserParam implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int userId;
     private String account;
     private String password;
+    private String userName;
+    private String email;
+    private String avatar;
 
     public int getUserId() {
         return userId;
@@ -30,9 +37,28 @@ public class UserParam {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "UserParam [userId=" + userId + ", account=" + account + ", password=" + password + "]";
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
 }

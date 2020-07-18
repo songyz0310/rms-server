@@ -6,15 +6,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class UserDTO {
 
     private int userId;
-
     private String account;
-
     private String password;
-
     private String userName;
-
     private String email;
-
     private String avatar;
 
     public int getUserId() {

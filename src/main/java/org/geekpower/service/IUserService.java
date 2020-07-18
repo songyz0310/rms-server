@@ -12,4 +12,8 @@ public interface IUserService {
 
     public PageResult<UserDTO> queryUserList(PageParam param);
 
+    public boolean registe(UserParam param);
+
+    public void activate(String key);
+
 }

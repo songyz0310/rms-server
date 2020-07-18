@@ -11,4 +11,7 @@ public interface IUserRepository extends JpaRepository<UserPO, Integer> {
 
     Page<UserPO> queryUserByUserNameLike(String name, Pageable pageable);
 
+    long countByAccount(String account);
+
+    long countByEmail(String email);
 }
