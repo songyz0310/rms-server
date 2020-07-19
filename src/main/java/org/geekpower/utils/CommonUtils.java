@@ -95,7 +95,7 @@ public class CommonUtils {
             return sdf.parse(source);
         }
         catch (ParseException exp) {
-            throw new BaseException(BaseError.PARAM_FORMAT_WRONG.getCode(), exp);
+            throw new BaseException(BaseError.PARAM_FORMAT_WRONG, exp);
         }
     }
 
@@ -114,7 +114,7 @@ public class CommonUtils {
             return getDateFormatter(format).parse(source);
         }
         catch (ParseException exp) {
-            throw new BaseException(BaseError.PARAM_FORMAT_WRONG.getCode(), exp);
+            throw new BaseException(BaseError.PARAM_FORMAT_WRONG, exp);
         }
     }
 

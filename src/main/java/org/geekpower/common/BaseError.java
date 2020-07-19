@@ -1,5 +1,7 @@
 package org.geekpower.common;
 
+import java.util.Locale;
+
 public enum BaseError {
     UNKNOWN_ERROR(30001001), // 未知错误
     PARAM_IS_NULL(20001002), // 参数为空
@@ -47,10 +49,10 @@ public enum BaseError {
     SEC_ACTIVATE_TIMEOUT(30007009), // 激活链接超时
     SEC_NEED_LOGIN(30007008), // 需要登录
 
-    APPLY_NOT_FOUND(40001001), // 申请不存在
-    GOODS_NOT_FOUND(40001002), // 商品不存在
-    GOODS_CAN_NOT_DEPLOY(40001003), // 商品不能申请发布
-    APPLY_CAN_NOT_OPERAT(40001004),// 申请不能操作
+    APPLY_NOT_FOUND(40001001), // {0} 申请不存在
+    GOODS_NOT_FOUND(40001002), // {0} 商品不存在
+    GOODS_CAN_NOT_DEPLOY(40001003), // {0} 商品不能申请发布
+    APPLY_CAN_NOT_OPERAT(40001004),// {0} 申请不能操作
 
     ;
 
@@ -65,7 +67,11 @@ public enum BaseError {
     }
 
     public String getDescription() {
-        return this.name();
+        return RmsI18n.getInstance().getMessage(RmsI18n.ERR_PREFIX + code);
+    }
+
+    public String getDescription(Locale lang, Object... args) {
+        return RmsI18n.getInstance().getMessage(lang, RmsI18n.ERR_PREFIX + code, args);
     }
 
 }

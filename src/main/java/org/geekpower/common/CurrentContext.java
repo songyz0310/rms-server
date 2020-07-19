@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.geekpower.common.dto.UserDTO;
+import org.geekpower.common.enums.Language;
 import org.geekpower.service.IAuthorityService;
 
 /**
@@ -49,6 +50,10 @@ public final class CurrentContext {
         return getContext().user;
     }
 
+    public static Language getLanguage() {
+        return getContext().lang;
+    }
+
     public static void setSession(HttpSession session) {
         Context context = getContext();
         context.session = session;
@@ -62,12 +67,14 @@ public final class CurrentContext {
         HttpSession session;
         String path = "";
         UserDTO user;
+        Language lang;
 
         void checkSession(HttpServletRequest request, IAuthorityService authorityService) {
             this.path = request.getRequestURI();
 
             String token = request.getHeader("token");
             this.user = authorityService.checkSession(token);
+            this.lang = Language.get(request.getHeader("x-lang"));
         }
     }
 

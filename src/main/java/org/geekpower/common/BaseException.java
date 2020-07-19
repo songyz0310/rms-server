@@ -1,7 +1,5 @@
 package org.geekpower.common;
 
-import java.util.Objects;
-
 public class BaseException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -15,16 +13,16 @@ public class BaseException extends RuntimeException {
         this.message = message;
     }
 
-    public BaseException(int errorCode, Throwable exp) {
+    public BaseException(BaseError error, Throwable exp) {
         super(exp);
-        this.errorCode = errorCode;
-        this.message = Objects.isNull(exp.getMessage()) ? "" : exp.getMessage();
+        this.errorCode = error.getCode();
+        this.message = error.getDescription(CurrentContext.getLanguage().getLocale());
     }
 
-    public BaseException(int errorCode, Throwable exp, String format, Object... args) {
-        super(exp);
-        this.errorCode = errorCode;
-        this.message = exp.getMessage() + format + args.toString();
+    public BaseException(BaseError error, Object... args) {
+        super(error.getDescription(CurrentContext.getLanguage().getLocale(), args));
+        this.errorCode = error.getCode();
+        this.message = super.getMessage();
     }
 
     public int getErrorCode() {

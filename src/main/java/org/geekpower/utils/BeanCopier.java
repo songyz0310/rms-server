@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,9 +73,8 @@ public class BeanCopier {
      * @return
      */
     public static <T> List<T> copyList(List<?> from, Class<T> to) {
-        if (Objects.isNull(from) || from.isEmpty()) {
-            return new ArrayList<>(0);
-        }
+        if (Objects.isNull(from) || from.isEmpty())
+            return Collections.emptyList();
 
         BeanInfo src = getBeanInfo(from.get(0).getClass());
         BeanInfo target = getBeanInfo(to);
@@ -125,8 +125,7 @@ public class BeanCopier {
                 }
             }
             catch (Exception exp) {
-                throw new BaseException(BaseError.SET_VALUE_FAILED.getCode(), exp,
-                        BaseError.SET_VALUE_FAILED.getDescription(), target.getBeanName(), targetField.getName());
+                throw new BaseException(BaseError.SET_VALUE_FAILED, exp);
             }
         });
 
@@ -145,8 +144,7 @@ public class BeanCopier {
                 ret.put(info.field.getName(), info.field.get(from));
             }
             catch (Exception exp) {
-                throw new BaseException(BaseError.OBJ_CREATE_FAILED.getCode(), exp,
-                        BaseError.OBJ_CREATE_FAILED.getDescription(), info.getName());
+                throw new BaseException(BaseError.OBJ_CREATE_FAILED, exp);
             }
         });
         return ret;
@@ -157,8 +155,7 @@ public class BeanCopier {
             return clz.getDeclaredConstructor().newInstance();
         }
         catch (Exception exp) {
-            throw new BaseException(BaseError.OBJ_CREATE_FAILED.getCode(), exp,
-                    BaseError.OBJ_CREATE_FAILED.getDescription(), clz.getName());
+            throw new BaseException(BaseError.OBJ_CREATE_FAILED, exp);
         }
     }
 
@@ -188,8 +185,7 @@ public class BeanCopier {
                 }
             }
             catch (Exception exp) {
-                throw new BaseException(BaseError.SET_VALUE_FAILED.getCode(), exp,
-                        BaseError.SET_VALUE_FAILED.getDescription(), to.getBeanName(), srcField.getName());
+                throw new BaseException(BaseError.SET_VALUE_FAILED, exp);
             }
         }
     }
@@ -205,21 +201,15 @@ public class BeanCopier {
     }
 
     private static class BeanInfo {
-        String className;
         List<FieldInfo> fields;
         Map<String, FieldInfo> fieldMap;
 
         BeanInfo(Class<?> clz) {
-            this.className = clz.getName();
             fieldMap = new HashMap<>();
             fields = new ArrayList<>(16);
 
             loadFields(clz, fields, true);
             fields.forEach(f -> fieldMap.put(f.getName(), f));
-        }
-
-        String getBeanName() {
-            return className;
         }
 
         FieldInfo getField(String name) {

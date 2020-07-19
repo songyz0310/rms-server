@@ -12,10 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RmsApp {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(RmsApp.class, args);
+        SpringApplication.run(RmsApp.class, args);
 
-	}
+    }
 
 }
